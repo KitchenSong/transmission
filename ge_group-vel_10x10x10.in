@@ -1,0 +1,24 @@
+&general
+  PREFIX = ge_10x10x10
+  MODE = phonons
+  FCSXML = Ge333-cubic.xml
+
+  NKD = 1; KD = Ge
+  MASS = 72.63
+/
+
+&cell
+    1.8897259886 # factor in bohrs unit
+     0.0000000000   2.8233680304   2.8233680304
+     2.8233680304   0.0000000000   2.8233680304
+     2.8233680304   2.8233680304   0.0000000000
+/
+
+&analysis 
+  PRINTVEL = 1
+/
+
+&kpoint
+  2  
+  10 10 10
+/
