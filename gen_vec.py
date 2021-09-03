@@ -91,6 +91,7 @@ for w in range(nw):
 plt.plot(wlist,J)
 plt.ylabel('Transmission (vxT)')
 plt.xlabel('Frequency (Hz)')
+plt.savefig('J.svg')
 plt.show()
 
 
