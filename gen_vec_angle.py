@@ -59,42 +59,50 @@ def read_v_n_omega(fname,nbranch,nx,ny,nz):
 
     return kpoint,omega,vel
 
-# direction of transport (a unit vector)
-direction = np.array([0,1,1])
-direction = direction/np.linalg.norm(direction)
-
-natm = 2 # num of atoms in primitive cell
-nbranch = natm * 3
-# get cell
-cell,recivec,nx,ny,nz,nkd = read_vec('ge_group-vel_10x10x10.in')
-# get volume of primitive cell
-vol = np.dot(np.cross(cell[0,:],cell[1,:]),cell[2,:])
-# get velocity
-kpoint,omega,vel = read_v_n_omega('ge_10x10x10.phvel_all',nbranch,nx,ny,nz)
-omega = omega * 0.029979245800e12*2*np.pi
-# gaussian smearing width
-sigma = 0.3e12*2*np.pi
-# heat flux
-nks = nx*ny*nz
+nt = 30
+theta = np.linspace(0,np.pi/4,nt)
 nw = 100
-wlist = np.linspace(0,10,nw)*1e12*2*np.pi
-J = np.zeros(wlist.shape)
+J2d = np.zeros((nw,nt))
+for ita in range(nt):
+# direction of transport (a unit vector)
+    direction = np.array([0,np.cos(theta[ita]),np.sin(theta[ita])])
+    direction = direction/np.linalg.norm(direction)
 
-for w in range(nw):
-    sys.stdout.write("\r%d%%" % int(w/(nw-1.0)*100))
-    sys.stdout.flush()
-    for i in range(nx):
-        for j in range(ny):
-            for k in range(nz):
-                for b in range(nbranch):
-                    J[w] += abs(np.dot(vel[i,j,k,b,:],direction))*np.exp(-(wlist[w]-omega[i,j,k,b])**2/sigma**2)/vol*(2*np.pi)**2/nks
+    natm = 2 # num of atoms in primitive cell
+    nbranch = natm * 3
+# get cell
+    cell,recivec,nx,ny,nz,nkd = read_vec('ge_group-vel_10x10x10.in')
+# get volume of primitive cell
+    vol = np.dot(np.cross(cell[0,:],cell[1,:]),cell[2,:])
+# get velocity
+    kpoint,omega,vel = read_v_n_omega('ge_10x10x10.phvel_all',nbranch,nx,ny,nz)
+    omega = omega * 0.029979245800e12*2*np.pi
+# gaussian smearing width
+    sigma = 0.3e12*2*np.pi
+# heat flux
+    nks = nx*ny*nz
 
-plt.plot(wlist,J)
-plt.ylabel('Transmission (vxT)')
-plt.xlabel('Frequency (Hz)')
-np.save('w.npy',wlist)
-np.save('J011.npy',J)
-plt.savefig('J.svg')
+    wlist = np.linspace(0,10,nw)*1e12*2*np.pi
+    J = np.zeros(wlist.shape)
+
+    for w in range(nw):
+        sys.stdout.write("\r%d%%" % int(w/(nw-1.0)*100))
+        sys.stdout.flush()
+        for i in range(nx):
+            for j in range(ny):
+                for k in range(nz):
+                    for b in range(nbranch):
+                        J[w] += abs(np.dot(vel[i,j,k,b,:],direction))*np.exp(-(wlist[w]-omega[i,j,k,b])**2/sigma**2)/vol*(2*np.pi)**2/nks
+    J2d[:,ita] = J[:]
+
+#plt.plot(wlist,J)
+#plt.ylabel('Transmission (vxT)')
+#plt.xlabel('Frequency (Hz)')
+#np.save('w.npy',wlist)
+#np.save('J011.npy',J)
+#plt.savefig('J.svg')
+np.save('J2d.npy',J2d)
+plt.imshow(J2d.T,origin='lower')
 plt.show()
 
 
