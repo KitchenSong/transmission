@@ -72,7 +72,8 @@ omega = omega * 0.029979245800e12*2*np.pi
 # gaussian smearing width
 sigma = 0.3e12*2*np.pi
 # direction of transport (a unit vector)
-direction = np.array([0,0,1])
+direction = np.array([0,1,1])
+direction = direction/np.linalg.norm(direction)
 # heat flux
 nks = nx*ny*nz
 nw = 100
@@ -91,6 +92,8 @@ for w in range(nw):
 plt.plot(wlist,J)
 plt.ylabel('Transmission (vxT)')
 plt.xlabel('Frequency (Hz)')
+np.save('w.npy',wlist)
+np.save('J011.npy',J)
 plt.savefig('J.svg')
 plt.show()
 
