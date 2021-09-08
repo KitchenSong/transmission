@@ -13,7 +13,7 @@ plt.savefig('comparison.svg')
 plt.figure()
 
 J2d = np.load('J2d.npy')
-plt.imshow(J2d.T,origin='lower',extent=(0,10,0,90),aspect='auto',interpolation='bicubic')
+plt.imshow(J2d.T,origin='lower',extent=(0,10,0,45),aspect='auto',interpolation='bicubic')
 plt.xlabel('Frequency (THz)')
 plt.ylabel('Angle (degree)')
 plt.savefig('J2d.svg')

@@ -46,18 +46,16 @@ def read_v_n_omega(fname,nbranch,nx,ny,nz):
             knum = int(line[2])
             ik += knum
             for j in range(knum):
-                kvec = np.array(lines[i+1].split()[3:6],dtype=float)
-                ix = np.array(np.remainder(kmesh*kvec,kmesh),dtype=int)
+                kvec = np.array(lines[i+1+nc*j].split()[3:6],dtype=float)
+                ix = np.mod(np.array(kmesh*kvec,dtype=int),kmesh)
                 kpoint[ix[0],ix[1],ix[2],0:3] = kvec
                 for k in range(nbranch):
                     omega[ix[0],ix[1],ix[2],k] = float(lines[i+2+nc*j+k].split()[3])
-                    vel[ix[0],ix[1],ix[2],k,0:3] = np.array(lines[i+2+nc*j+k].split()[4:7],dtype=float)
-
+                    vel[ix[0],ix[1],ix[2],k,0:3] = np.array(lines[i+2+nc*j+k].split()[5:8],dtype=float)
     print('Total number of k points: ' + str(ik))
             
-            #break
-
     return kpoint,omega,vel
+
 
 nt = 30
 theta = np.linspace(0,np.pi/4,nt)
