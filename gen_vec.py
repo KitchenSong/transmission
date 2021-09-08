@@ -13,7 +13,7 @@ def read_vec(fname):
     f.close()
     for i,line in enumerate(lines):
         if re.findall('cell',line):
-            a = float(lines[i+1].split()[0])
+            a = float(lines[i+1].split()[0])*0.529177249
             for j in range(3):
                 l = lines[i+2+j].split()
                 for k in range(3):
@@ -77,7 +77,7 @@ nw = 100
 wlist = np.linspace(0,10,nw)*1e12*2*np.pi
 J = np.zeros(wlist.shape)
 
-A = (np.sqrt(2)*5.3353e-10)**2
+A = (np.sqrt(2)*5.3353e-10/2)**2
 vol = vol * 1e-30
 
 for w in range(nw):
@@ -105,7 +105,7 @@ gw[0] = 0
 plt.figure()
 plt.plot(wlist,df)
 g = np.trapz(gw,wlist)
-print(g)
+print(g/1e8)
 
 np.save('w.npy',wlist)
 np.save('J011.npy',J)

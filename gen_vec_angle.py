@@ -13,7 +13,7 @@ def read_vec(fname):
     f.close()
     for i,line in enumerate(lines):
         if re.findall('cell',line):
-            a = float(lines[i+1].split()[0])
+            a = float(lines[i+1].split()[0])*0.529177249
             for j in range(3):
                 l = lines[i+2+j].split()
                 for k in range(3):
@@ -81,6 +81,8 @@ for ita in range(nt):
     nks = nx*ny*nz
 
     wlist = np.linspace(0,10,nw)*1e12*2*np.pi
+    A = (np.sqrt(2)*5.3353e-10/2)**2
+    vol = vol * 1e-30
     J = np.zeros(wlist.shape)
 
     for w in range(nw):
@@ -90,7 +92,7 @@ for ita in range(nt):
             for j in range(ny):
                 for k in range(nz):
                     for b in range(nbranch):
-                        J[w] += abs(np.dot(vel[i,j,k,b,:],direction))*np.exp(-(wlist[w]-omega[i,j,k,b])**2/sigma**2)/vol*(2*np.pi)**2/nks
+                        J[w] += 0.5*abs(np.dot(vel[i,j,k,b,:],direction))*np.exp(-(wlist[w]-omega[i,j,k,b])**2/2/sigma**2)/sigma/np.sqrt(2*np.pi)/vol*A*(2*np.pi)/nks 
     J2d[:,ita] = J[:]
 
 #plt.plot(wlist,J)
